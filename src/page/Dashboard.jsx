@@ -8,14 +8,16 @@ import { productsData, categoriesData } from "../data/product";
 function Dashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   //eslint-disable-next-line
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState("all");
   const [products] = useState(productsData);
   //eslint-disable-next-line
   const [categories] = useState(categoriesData);
 
-  const handleMenuToggle = () => {
-    setIsMenuOpen(!isMenuOpen);
+  // Hanya perlu satu fungsi toggle
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
   };
+
   //eslint-disable-next-line
   const handleCategoryClick = (category) => {
     setActiveCategory(category);
@@ -23,8 +25,9 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-deepblue">
-      <Header onMenuToggle={handleMenuToggle} isMenuOpen={isMenuOpen} />
+      <Header onMenuToggle={toggleMenu} isMenuOpen={isMenuOpen} />
       <HeroSection />
+      {/* Uncomment jika perlu kategori */}
       {/* <Categories 
         categories={categories} 
         onCategoryClick={handleCategoryClick}

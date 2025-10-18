@@ -1,7 +1,7 @@
-
-import React from 'react';
-import { Menu, X, ShoppingCart, Search } from 'lucide-react';
-import iconWeb from '../assets/img/icon.png'
+import React from "react";
+import { Menu, X } from "lucide-react";
+import iconWeb from "../assets/img/icon.png";
+import Sidebar from "./Sidebar";
 
 const Header = ({ onMenuToggle, isMenuOpen }) => {
   return (
@@ -16,12 +16,6 @@ const Header = ({ onMenuToggle, isMenuOpen }) => {
                 className="w-24 sm:w-20 md:w-20 lg:w-20 xl:w-26"
               />
             </div>
-            
-            {/* <div className="items-center hidden space-x-6 md:flex">
-              <button className="transition-transform hover:scale-110">
-                <ShoppingCart className="w-6 h-6 text-deepblue" />
-              </button>
-            </div> */}
 
             <button
               onClick={onMenuToggle}
@@ -32,6 +26,17 @@ const Header = ({ onMenuToggle, isMenuOpen }) => {
           </div>
         </div>
       </div>
+
+      {/* Overlay hitam jika sidebar terbuka */}
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-95 z-40"
+          onClick={onMenuToggle}
+        ></div>
+      )}
+
+      {/* Menampilkan Sidebar jika isMenuOpen true */}
+      {isMenuOpen && <Sidebar onClose={onMenuToggle} />}
     </header>
   );
 };

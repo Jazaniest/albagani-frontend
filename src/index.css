@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+
+@theme{
+    --color-deepblue : #002B4E;
+    --color-goldenbeige : #EACB78;
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
-import { getProducts, removeProduct } from '../data/product';
+import { getProducts, removeProduct, updateProductData } from '../data/product';
 import AdminStats from '../components/admin/AdminStats';
 import ProductForm from '../components/admin/ProductForm';
 import ProductTable from '../components/admin/ProductTable';
@@ -15,49 +15,50 @@ const AdminPage = () => {
     const loadProducts = async () => {
       try {
         const products = await getProducts();
-        if (Array.isArray(products) && products.length > 0) {
-          setItems(products);
-        } else {
-          setItems([]);
-        }
+        setItems(Array.isArray(products) ? products : []);
       } catch (err) {
         setError('Gagal mengambil data produk.', err);
       } finally {
         setLoading(false);
       }
     };
-
     loadProducts();
   }, []);
 
   const handleAdd = (payload) => {
-    setItems((prevItems) => [...prevItems, payload]);
+    setItems(prevItems => [...prevItems, payload]);
   };
 
+  // Hapus produk
   const handleRemove = async (id) => {
     try {
-      // Panggil API removeProduct. Jika gagal, akan melempar error
       await removeProduct(id);
-      // Setelah berhasil hapus di backend, perbarui state dengan menyaring produk berdasarkan product_id
       setItems(prevItems => prevItems.filter(item => item.product_id !== id));
     } catch (err) {
-      // Tampilkan error jika ada
       setError(err.message || 'Gagal menghapus produk');
     }
   };
 
-  const totalProducts = items.length;
+  // Edit produk (update)
+  const handleUpdate = async (id, updatedData) => {
+    try {
+      const updated = await updateProductData(id, updatedData);
+      setItems(prevItems =>
+        prevItems.map(item =>
+          item.product_id === id ? updated : item
+        )
+      );
+    } catch (err) {
+      setError(err.message || 'Gagal mengedit produk');
+    }
+  };
 
-  const totalClicks = Array.isArray(items)
-    ? items.reduce((total, item) => total + item.clicks, 0)
-    : 0;
+  const totalProducts = items.length;
+  const totalClicks = Array.isArray(items) ? items.reduce((total, item) => total + (item.clicks || 0), 0) : 0;
 
   return (
     <div className="min-h-screen bg-deepblue">
-      <Header
-        onMenuToggle={() => setIsMenuOpen((v) => !v)}
-        isMenuOpen={isMenuOpen}
-      />
+      <Header onMenuToggle={() => setIsMenuOpen(v => !v)} isMenuOpen={isMenuOpen} />
 
       <main className="container px-4 mx-auto pt-32 pb-16">
         <div className="mx-auto shadow-2xl bg-goldenbeige rounded-3xl max-w-[1000px] md:max-w-[1200px] lg:max-w-[1500px] p-6 md:p-8">
@@ -68,10 +69,7 @@ const AdminPage = () => {
             Kelola produk, hapus produk, dan pantau total klik.
           </p>
 
-          <AdminStats
-            totalProducts={totalProducts}
-            totalClicks={totalClicks}
-          />
+          <AdminStats totalProducts={totalProducts} totalClicks={totalClicks} />
 
           <div className="grid md:grid-cols-2 gap-6 mt-6">
             <div className="bg-white rounded-2xl p-4 md:p-6 shadow-xl">
@@ -89,7 +87,7 @@ const AdminPage = () => {
               ) : error ? (
                 <p className="text-red-500">{error}</p>
               ) : (
-                <ProductTable items={items} onRemove={handleRemove} />
+                <ProductTable items={items} onRemove={handleRemove} onEdit={handleUpdate} />
               )}
             </div>
           </div>

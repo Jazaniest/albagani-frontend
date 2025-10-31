@@ -14,8 +14,8 @@ const AdminStats = ({ totalProducts, totalClicks }) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard label="Total Produk" value={totalProducts} />
             <StatCard label="Total Klik" value={totalClicks} />
-            <StatCard label="Publikasi" value="-" />
-            <StatCard label="Status" value="Simulasi" />
+            <StatCard label="Publikasi" value="True" />
+            <StatCard label="Status" value="Production" />
         </div>
     );
 };

@@ -154,3 +154,31 @@ export const fetchProductDataFromBackend = async (url) => {
     throw error;
   }
 };
+
+// ==============================
+// Fungsi untuk memperbarui produk melalui backend (edit)
+// ==============================
+export async function updateProductData(id, { product_name, product_price, product_photo, product_link }) {
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    throw new Error('Token tidak ditemukan. Silakan login kembali.');
+  }
+  try {
+    const response = await fetchWithCredentials(`${API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ product_name, product_price, product_photo, product_link }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Gagal memperbarui produk');
+    }
+    const updated = await response.json();
+    return updated;
+  } catch (error) {
+    console.error('Error updating product:', error);
+    throw error;
+  }
+}

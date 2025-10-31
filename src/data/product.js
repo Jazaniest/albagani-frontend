@@ -5,14 +5,11 @@ const API_URL = 'https://api.albagani.com/api/products';
 
 // Helper function untuk request dengan credentials
 const fetchWithCredentials = async (url, options = {}) => {
-  return fetch(url, {
-    ...options,
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+  const headers = { ...(options.headers || {}) };
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+  }
+  return fetch(url, { ...options, credentials: 'include', headers });
 };
 
 // ==============================
@@ -43,52 +40,65 @@ export async function getProducts() {
 // ==============================
 export async function addProduct({ product_name, product_price, product_photo, product_link }) {
   const token = localStorage.getItem('auth_token');
-
-  if (!token) {
-    throw new Error('Token tidak ditemukan. Silakan login kembali.');
-  }
-
+  let response;
   try {
-    const response = await fetchWithCredentials(`${API_URL}/add-product`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        product_name,
-        product_price,
-        product_photo,
-        product_link
-      }),
-    });
+    if (product_photo instanceof File) {
+      const formData = new FormData();
+      formData.append('product_name', product_name);
+      formData.append('product_price', product_price);
+      formData.append('product_link', product_link);
+      formData.append('product_photo', product_photo); // nama field sesuai BE
+      response = await fetchWithCredentials(`${API_URL}/add-product/manual`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+    } else {
+      response = await fetchWithCredentials(`${API_URL}/add-product/tiktok`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ product_name, product_price, product_photo, product_link }),
+      });
+    }
 
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Gagal menambahkan produk');
     }
 
-    const addedProduct = await response.json();
-    return addedProduct;
+    return await response.json();  // Mengembalikan hasil response dari server
   } catch (error) {
     console.error('Error adding product:', error);
     throw error;
   }
 }
 
+
 // ==============================
 // Fungsi untuk menghapus produk melalui backend
 // ==============================
 export async function removeProduct(id) {
+  // Ambil token dari localStorage untuk otentikasi
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    throw new Error('Token tidak ditemukan. Silakan login kembali.');
+  }
   try {
+    // Kirim permintaan DELETE dengan header Authorization
     const response = await fetchWithCredentials(`${API_URL}/${id}`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
     });
 
+    // Jika respons tidak OK (misal 401/403), ambil pesan error dari backend
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Gagal menghapus produk');
     }
 
+    // Backend biasanya mengembalikan id atau pesan sukses; cukup kembalikan id
     return id;
   } catch (error) {
     console.error('Error removing product:', error);

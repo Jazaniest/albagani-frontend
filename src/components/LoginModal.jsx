@@ -1,11 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { login } from "../data/auth";
 import { useNavigate } from "react-router-dom";
 
+
 const LoginModal = ({ isOpen, onClose, onSubmit }) => {
   const userRef = useRef(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const onEsc = (e) => e.key === "Escape" && onClose?.();
@@ -26,6 +28,7 @@ const LoginModal = ({ isOpen, onClose, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const fd = new FormData(e.currentTarget);
     const payload = {
       username: fd.get("username"),
@@ -41,6 +44,8 @@ const LoginModal = ({ isOpen, onClose, onSubmit }) => {
         } else {
         console.log("Login gagal.");
     }
+
+    setIsLoading(false);
   };
 
   if (!isOpen) return null;
@@ -97,7 +102,7 @@ const LoginModal = ({ isOpen, onClose, onSubmit }) => {
             type="submit"
             className="w-full rounded-xl bg-deepblue text-white py-2.5 font-medium hover:opacity-90 transition"
           >
-            Login
+            {isLoading ? "Memuat..." : "Login"}
           </button>
         </form>
       </div>

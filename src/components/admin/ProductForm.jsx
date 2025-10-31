@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { fetchProductDataFromBackend, addProduct } from "../../data/product";
 
-const ProductForm = () => {
+const ProductForm = ({ onSubmit }) => {
   const [mode, setMode] = useState("manual");
   const [form, setForm] = useState({
     name: "",
+    title: "",
     price: "",
     image: "",
     link: "",
+    file: null,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,6 +17,12 @@ const ProductForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handler untuk perubahan file pada mode manual
+  const handleFileChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    setForm((prev) => ({ ...prev, file }));
   };
 
   const fetchProductData = async (url) => {
@@ -42,32 +50,57 @@ const ProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Menyiapkan payload berdasarkan mode
+    let payload;
+    if (mode === "manual") {
+      payload = {
+        product_name: form.name,
+        product_price: form.price,
+        product_link: form.link,
+        product_photo: form.file,
+      };
+    } else {
+      // TikTok mode
+      payload = {
+        product_name: form.title,
+        product_price: form.price,
+        product_link: form.link,
+        product_photo: form.image,
+      };
+    }
 
-    const finalData = {
-      product_name: form.title,  
-      product_price: form.price, 
-      product_photo: form.image,
-      product_link: form.link,
-    };
+    // Validasi sederhana
+    if (
+      !payload.product_name ||
+      !payload.product_price ||
+      !payload.product_link ||
+      !payload.product_photo
+    ) {
+      setError("Semua field wajib diisi.");
+      return;
+    }
 
     setIsLoading(true);
+    setError("");
     try {
-      const result = await addProduct(finalData);
-
+      const result = await addProduct(payload);
       if (result) {
-        setForm({ name: "", price: "", image: "", link: "" });
+        // Reset form setelah berhasil
+        setForm({ name: "", title: "", price: "", image: "", link: "", file: null });
         setError("");
+        // Panggil callback onSubmit dari parent jika tersedia
+        if (typeof onSubmit === "function") {
+          onSubmit(result);
+        }
       } else {
         setError("Gagal menambahkan produk.");
       }
     } catch (error) {
-      setError("Terjadi kesalahan saat menambah produk.", error);
+      setError(error.message || "Terjadi kesalahan saat menambah produk.");
     } finally {
       setIsLoading(false);
     }
   };
-
-
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -98,6 +131,80 @@ const ProductForm = () => {
         </button>
       </div>
 
+      {/* Form Manual */}
+      {mode === "manual" && (
+        <>
+          <div className="mt-3">
+            <label className="block text-sm font-medium text-deepblue mb-1">
+              Nama Produk
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Nama produk"
+              required
+              className="w-full rounded-xl border px-3 py-2 focus:ring-2 focus:ring-deepblue"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-deepblue mb-1">
+              Harga (IDR)
+            </label>
+            <input
+              type="number"
+              name="price"
+              value={form.price}
+              onChange={handleChange}
+              placeholder="0"
+              required
+              className="w-full rounded-xl border px-3 py-2 focus:ring-2 focus:ring-deepblue"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-deepblue mb-1">
+              Link Produk
+            </label>
+            <input
+              type="url"
+              name="link"
+              value={form.link}
+              onChange={handleChange}
+              placeholder="https://contoh.com/produk"
+              required
+              className="w-full rounded-xl border px-3 py-2 focus:ring-2 focus:ring-deepblue"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-deepblue mb-1">
+              Foto Produk
+            </label>
+            <input
+              type="file"
+              name="photo"
+              accept="image/*"
+              onChange={handleFileChange}
+              required
+              className="w-full rounded-xl border px-3 py-2 focus:ring-2 focus:ring-deepblue"
+            />
+            {/* Preview gambar manual */}
+            {form.file && (
+              <div className="mt-2">
+                <img
+                  src={URL.createObjectURL(form.file)}
+                  alt="Preview"
+                  className="w-16 h-16 object-cover rounded"
+                />
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
       {/* Form TikTok Shop */}
       {mode === "tiktok" && (
         <>
@@ -126,13 +233,20 @@ const ProductForm = () => {
             {isLoading ? "Memuat..." : "Ambil Data Produk"}
           </button>
 
-          {error && <div className="text-red-500">{error}</div>}
-
           {/* Tampilkan Data yang Terambil */}
           {form.title && form.image && (
             <div className="mt-5">
-              <p><strong>Title:</strong> {form.title}</p>
-              <p><strong>Image:</strong> <img src={form.image} alt={form.title} className="w-16 h-16" /></p>
+              <p>
+                <strong>Title:</strong> {form.title}
+              </p>
+              <p>
+                <strong>Image:</strong>{" "}
+                <img
+                  src={form.image}
+                  alt={form.title}
+                  className="w-16 h-16"
+                />
+              </p>
             </div>
           )}
 
@@ -152,12 +266,15 @@ const ProductForm = () => {
         </>
       )}
 
+      {/* Tampilkan error jika ada */}
+      {error && <div className="text-red-500">{error}</div>}
+
       {/* Tombol Submit */}
       <button
         type="submit"
         className="w-full py-2 font-semibold text-white rounded-full bg-deepblue hover:bg-opacity-90 transition duration-200"
       >
-        Tambah
+        {isLoading ? "Memuat..." : "Tambah"}
       </button>
     </form>
   );

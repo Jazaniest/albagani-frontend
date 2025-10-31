@@ -4,8 +4,8 @@ import { BrowserRouter, Router, Routes, Route, Navigate } from "react-router-dom
 import './index.css';
 import Dashboard from './page/Dashboard';
 import AdminPage from './page/AdminPage';
-import { isLoggedIn } from './data/auth';
 import LoginModal from './components/LoginModal';
+import PrivateRoute from './components/PrivateRoute';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<LoginModal />} />
         {/* <Route path="/admin" element={<AdminPage />} /> */}
-        <Route path="/admin" element={isLoggedIn() ? <AdminPage /> : <Navigate to="/" replace />} />
+        <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>}/>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

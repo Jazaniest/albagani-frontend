@@ -4,14 +4,22 @@ import { getProducts, removeProduct, updateProductData } from '../data/product';
 import AdminStats from '../components/admin/AdminStats';
 import ProductForm from '../components/admin/ProductForm';
 import ProductTable from '../components/admin/ProductTable';
+import { useNavigate } from 'react-router-dom';
 
 const AdminPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const storedToken = localStorage.getItem('auth_token');
+    if(!storedToken || storedToken === 'undefined' || storedToken === 'null') {
+      navigate('/');
+      return;
+    }
+
     const loadProducts = async () => {
       try {
         const products = await getProducts();
@@ -23,13 +31,12 @@ const AdminPage = () => {
       }
     };
     loadProducts();
-  }, []);
+  }, [navigate]);
 
   const handleAdd = (payload) => {
     setItems(prevItems => [...prevItems, payload]);
   };
 
-  // Hapus produk
   const handleRemove = async (id) => {
     try {
       await removeProduct(id);
@@ -39,7 +46,6 @@ const AdminPage = () => {
     }
   };
 
-  // Edit produk (update)
   const handleUpdate = async (id, updatedData) => {
     try {
       const updated = await updateProductData(id, updatedData);
@@ -66,7 +72,7 @@ const AdminPage = () => {
             Admin Panel
           </h1>
           <p className="text-deepblue/80 mb-6">
-            Kelola produk, hapus produk, dan pantau total klik.
+            Kelola produk, hapus produk, dan edit produk anda.
           </p>
 
           <AdminStats totalProducts={totalProducts} totalClicks={totalClicks} />

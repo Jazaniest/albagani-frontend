@@ -59,14 +59,21 @@ export async function logout() {
 // Fungsi untuk mendapatkan token dari localStorage
 // ==============================
 export function getToken() {
-  return localStorage.getItem(LS_KEY);
+  // Ambil token dari localStorage
+  const raw = localStorage.getItem(LS_KEY);
+  // Kembalikan null bila token kosong atau string tidak valid
+  if (!raw || raw === 'undefined' || raw === 'null') {
+    return null;
+  }
+  return raw;
 }
 
 // ==============================
 // Fungsi untuk mengecek apakah pengguna sudah login
 // ==============================
 export function isLoggedIn() {
-  return Boolean(getToken());
+  const token = getToken();
+  return !!token;
 }
 
 // ==============================
@@ -74,7 +81,6 @@ export function isLoggedIn() {
 // ==============================
 export async function authenticatedRequest(url, options = {}) {
   const token = getToken();
-
   if (!token) {
     throw new Error('Pengguna belum login.');
   }
@@ -88,6 +94,14 @@ export async function authenticatedRequest(url, options = {}) {
       'Authorization': `Bearer ${token}`,
     },
   });
+
+  if (response.status === 401 || response.status === 403) {
+    localStorage.removeItem(LS_KEY);
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
+    throw new Error('Unauthorized');
+  }
 
   if (!response.ok) {
     const error = await response.json();

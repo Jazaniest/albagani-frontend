@@ -37,7 +37,6 @@ const LoginModal = ({ isOpen, onClose, onSubmit }) => {
 
     const token = await login(payload);
         if (token) {
-        localStorage.setItem("auth_token", token);
         onClose();
         onSubmit && onSubmit(token);
         navigate("/admin");

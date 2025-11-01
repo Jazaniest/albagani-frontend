@@ -3,13 +3,25 @@
 // ==============================
 const API_URL = 'https://api.albagani.com/api/products';
 
+// ==============================
 // Helper function untuk request dengan credentials
+// ==============================
 const fetchWithCredentials = async (url, options = {}) => {
   const headers = { ...(options.headers || {}) };
   if (!(options.body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
   }
-  return fetch(url, { ...options, credentials: 'include', headers });
+  const response = await fetch(url, { ...options, credentials: 'include', headers });
+
+  if (response.status === 401 || response.status === 403) {
+    localStorage.removeItem('auth_token');
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
+    throw new Error('Unauthorized');
+  }
+
+  return response;
 };
 
 // ==============================

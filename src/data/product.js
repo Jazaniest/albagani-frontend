@@ -194,3 +194,16 @@ export async function updateProductData(id, { product_name, product_price, produ
     throw error;
   }
 }
+
+export const category = () => [
+  "Fashion",
+  "Kecantikan",
+  "Perabot",
+  "Elektronik",
+  "Kebutuhan Harian",
+  "Otomotif",
+  "Hobi",
+  "ATK",
+  "Outdoor",
+  "Produk Digital"
+];

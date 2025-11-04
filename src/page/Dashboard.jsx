@@ -5,15 +5,14 @@ import HeroSection from "../components/HeroSection";
 import ProductsShowcase from "../components/ProductShowcase";
 import { getProducts } from "../data/product";
 import LoginModal from "../components/LoginModal";
+import HeroSectionSkeleton from "../components/HerSectionSkeleton";
+import Footer from "../components/Footer";
 
 function Dashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  //eslint-disable-next-line
-  const [activeCategory, setActiveCategory] = useState("all");
   const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isLoginOpen, setLoginOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,7 +24,7 @@ function Dashboard() {
           throw new Error("Fetched data is not an array.");
         }
       } catch (error) {
-        setError(error.message);
+        console.log(error.message);
       } finally {
         setIsLoading(false);
       }
@@ -34,40 +33,32 @@ function Dashboard() {
     fetchProducts();
   }, []);
 
-  const handleLoginSubmit = async ({ username, password }) => {
-    console.log("Do login:", { username, password });
+  const handleLoginSubmit = async () => {
     setLoginOpen(false);
   };
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
-  //eslint-disable-next-line
-  const handleCategoryClick = (category) => setActiveCategory(category);
 
   return (
-    <div className="min-h-screen bg-deepblue">
+    <div className="flex flex-col min-h-screen bg-deepblue">
       <Header
         onMenuToggle={toggleMenu}
         isMenuOpen={isMenuOpen}
         onOpenLogin={() => setLoginOpen(true)}
       />
 
-      <HeroSection />
-      {isLoading ? (
-        <div className="text-center text-white">Loading products...</div>
-      ) : error ? (
-        <div className="text-center text-white">Belum ada produk</div>
-      ) : (
-        <ProductsShowcase products={products} />
-      )}
+      {/* Konten utama */}
+      <main className="flex-grow">
+        {isLoading ? <HeroSectionSkeleton /> : <HeroSection />}
+        {isLoading ? (
+          <ProductsShowcase products={[]} />
+        ) : (
+          <ProductsShowcase products={products} />
+        )}
+      </main>
 
-      <footer className="py-1 md:py-4 mt-12 mb-0 bg-goldenbeige">
-        <div className="container px-4 mx-auto text-center text-deepblue">
-          <p className="text-xl opacity-80">
-            © 2025 Albagani.com <br />
-            Hak Cipta Dilindungi
-          </p>
-        </div>
-      </footer>
+      {/* Footer selalu di bawah */}
+      <Footer />
 
       <LoginModal
         isOpen={isLoginOpen}

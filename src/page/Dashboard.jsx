@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import Categories from "../components/Categories";
 import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import ProductsShowcase from "../components/ProductShowcase";
 import { getProducts } from "../data/product";
 import LoginModal from "../components/LoginModal";
-import HeroSectionSkeleton from "../components/HerSectionSkeleton";
+import HeroSectionSkeleton from "../components/skeleton/HerSectionSkeleton";
 import Footer from "../components/Footer";
 
 function Dashboard() {

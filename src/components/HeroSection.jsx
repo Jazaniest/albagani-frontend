@@ -1,6 +1,7 @@
 import React from 'react';
 import bagPhoto from '../assets/img/10283018.png';
 import iconWebWhite from '../assets/img/icon-white.png';
+import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   return (
@@ -11,9 +12,12 @@ const HeroSection = () => {
           <p className="text-base leading-relaxed text-gray-200 md:text-3xl md:text-bold">
             Saatnya temukan produk yang kamu suka
           </p>
-          <button className="px-8 py-3 font-semibold transition-transform rounded-full shadow-lg bg-goldenbeige text-deepblue hover:scale-105">
+          <Link
+            to="/product"
+            className="inline-block px-8 py-3 font-semibold transition-transform rounded-full shadow-lg bg-goldenbeige text-deepblue hover:scale-105"
+          >
             Beli Sekarang
-          </button>
+          </Link>
         </div>
         <div className="flex w-full justify-center order-1 md:w-auto md:justify-end md:order-2">
           <img className='w-1/2 md:w-1/2 md:ml-auto' src={bagPhoto} alt="shopping bag" />

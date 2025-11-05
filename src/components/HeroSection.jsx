@@ -14,7 +14,7 @@ const HeroSection = () => {
           </p>
           <Link
             to="/product"
-            className="inline-block px-8 py-3 font-semibold transition-transform rounded-full shadow-lg bg-goldenbeige text-deepblue hover:scale-105"
+            className="inline-block px-8 py-3 font-semibold transition-transform rounded-full shadow-lg bg-goldenbeige text-deepblue"
           >
             Beli Sekarang
           </Link>

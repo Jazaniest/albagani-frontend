@@ -4,6 +4,7 @@ import SmallProductCard from '../components/SmallProductCard';
 import ProductListSkeleton from '../components/ProductListSkeleton';
 import Pagination from '../components/Pagination';
 import Header from '../components/Header';
+import LoginModal from "../components/LoginModal";
 
 //item show total
 const PAGE_SIZE = 24;
@@ -13,6 +14,8 @@ export default function ProductListPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [isLoginOpen, setLoginOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -41,11 +44,21 @@ export default function ProductListPage() {
     setPage(1);
   }, [query]);
 
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+
+  const handleLoginSubmit = async () => {
+    setLoginOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-deepblue pt-28 pb-12">
       <div className="container mx-auto px-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <Header />
+          <Header
+            onMenuToggle={toggleMenu}
+            isMenuOpen={isMenuOpen}
+            onOpenLogin={() => setLoginOpen(true)}
+          />
           <h1 className="text-xl font-bold text-white">Daftar Produk</h1>
           <div className="w-full sm:max-w-sm">
             <label htmlFor="search-input" className="sr-only">Cari produk</label>
@@ -96,6 +109,12 @@ export default function ProductListPage() {
             Menampilkan {paged.length} dari {filtered.length} produk. Halaman {page} dari {pageCount}.
           </p>
         )}
+
+        <LoginModal
+          isOpen={isLoginOpen}
+          onClose={() => setLoginOpen(false)}
+          onSubmit={handleLoginSubmit}
+        />
       </div>
     </div>
   );

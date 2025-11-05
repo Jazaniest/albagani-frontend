@@ -24,7 +24,7 @@ export default function SmallProductCard({ product }) {
   };
 
   return (
-    <article className="overflow-hidden bg-goldenbeige rounded-xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-1 duration-200">
+    <article className="overflow-hidden bg-goldenbeige rounded-xl shadow-sm transition-all transform duration-200 cursor-pointer">
       <button 
         onClick={onOpen}
         onKeyPress={handleKeyPress}

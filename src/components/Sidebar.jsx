@@ -52,13 +52,13 @@ const Sidebar = ({ isOpen, onClose, onOpenLogin }) => {
         {/* Tombol Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-white hover:text-gray rounded-full"
+          className="absolute top-4 right-4 text-white rounded-full cursor-pointer"
           aria-label="Tutup sidebar"
         >
           <X className="w-6 h-6" />
         </button>
 
-        <div className="flex items-center bg-goldenbeige justify-center rounded-md mt-8 space-x-3">
+        <div className="flex items-center py-2 bg-goldenbeige justify-center rounded-md mt-8 space-x-3">
           <img src={iconWeb} alt="Albagani.com" className="w-24 sm:w-20 md:w-20 lg:w-20 xl:w-26" />
         </div>
 
@@ -67,7 +67,7 @@ const Sidebar = ({ isOpen, onClose, onOpenLogin }) => {
           <button
             type="button"
             onClick={handleLoginClick}
-            className="block w-full text-lg text-white hover:text-gray transition-colors duration-200"
+            className="block w-full text-lg text-white hover:text-gray transition-colors duration-200 cursor-pointer"
           >
             {isLoggedIn() ? "Logout" : "Login"}
           </button>

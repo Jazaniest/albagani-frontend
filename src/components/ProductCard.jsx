@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { recordClick } from '../data/product';
+import { Link } from 'react-router-dom'
 
 const ProductCard = ({ product }) => {
     const [imageError, setImageError] = useState(false);
@@ -25,7 +26,7 @@ const ProductCard = ({ product }) => {
             <span className="text-xl font-semibold text-white">Hot Product</span>
 
             {/* Product Card */}
-            <div className="overflow-hidden transition-all shadow-xl bg-goldenbeige rounded-3xl hover:shadow-2xl hover:scale-105 group mt-6">
+            <div className="overflow-hidden transition-all shadow-xl bg-goldenbeige rounded-3xl group mt-6">
                 <div className="overflow-hidden bg-gray-200 aspect-square">
                     {imageError ? (
                         <div className="w-full h-full flex items-center justify-center text-deepblue">
@@ -35,7 +36,7 @@ const ProductCard = ({ product }) => {
                         <img 
                             src={product.product_photo} 
                             alt={product.product_name} 
-                            className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
+                            className="object-cover w-full h-full transition-transform duration-300"
                             onError={() => setImageError(true)}
                             loading="lazy"
                         />
@@ -50,7 +51,7 @@ const ProductCard = ({ product }) => {
                     </p>
                     <button 
                         onClick={onBuy} 
-                        className="w-full py-2 font-semibold text-white transition-colors rounded-full bg-deepblue hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-deepblue focus:ring-offset-2"
+                        className="w-full py-2 font-semibold text-white transition-colors rounded-full bg-deepblue focus:outline-none focus:ring-2 focus:ring-deepblue focus:ring-offset-2 cursor-pointer"
                     >
                         Beli Sekarang
                     </button>

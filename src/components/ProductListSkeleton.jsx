@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function ProductListSkeleton({ count = 24 }) {
+export default function ProductListSkeleton({ count = 6 }) {
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6">
       {Array.from({ length: count }).map((_, i) => (

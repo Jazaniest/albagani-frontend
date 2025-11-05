@@ -34,7 +34,7 @@ const Header = ({ onMenuToggle, isMenuOpen, onOpenLogin }) => {
 
             <button
               onClick={onMenuToggle}
-              className="transition-transform text-deepblue hover:scale-110 rounded-full"
+              className="transition-transform text-deepblue rounded-full cursor-pointer"
               aria-expanded={isMenuOpen}
               aria-controls="sidebar"
               aria-label={isMenuOpen ? "Tutup menu" : "Buka menu"}

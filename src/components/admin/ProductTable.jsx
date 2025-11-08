@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { category } from '../../data/product';
 
 const currency = (v) =>
   new Intl.NumberFormat('id-ID', {
@@ -20,6 +21,7 @@ const ProductTable = ({ items, onRemove, onEdit }) => {
     product_price: '',
     product_photo: '',
     product_link: '',
+    product_category: ''
   });
 
   const openModal = (id) => {
@@ -45,6 +47,7 @@ const ProductTable = ({ items, onRemove, onEdit }) => {
       product_price: product.product_price || '',
       product_photo: product.product_photo || '',
       product_link: product.product_link || '',
+      product_category: product.product_category || '',
     });
     setIsEditModalOpen(true);
   };
@@ -57,6 +60,7 @@ const ProductTable = ({ items, onRemove, onEdit }) => {
       product_price: '',
       product_photo: '',
       product_link: '',
+      product_category: '',
     });
   };
 
@@ -76,7 +80,8 @@ const ProductTable = ({ items, onRemove, onEdit }) => {
         !editForm.product_name ||
         !editForm.product_price ||
         !editForm.product_link ||
-        !editForm.product_photo
+        !editForm.product_photo ||
+        !editForm.product_category
     ) {
         return; // Tidak menyimpan jika ada field kosong
     }
@@ -233,6 +238,25 @@ const ProductTable = ({ items, onRemove, onEdit }) => {
                   required
                   className="w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-deepblue"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-deepblue mb-1">
+                  Kategori Produk
+                </label>
+                <select
+                  name="category"
+                  value={editForm.category}
+                  onChange={handleEditChange}
+                  required
+                  className="w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-deepblue"
+                >
+                  <option value="">Pilih kategori</option>
+                  {category().map((item, index) => (
+                    <option key={index} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-deepblue mb-1">URL Foto</label>

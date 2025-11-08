@@ -5,6 +5,7 @@ import ProductListSkeleton from '../components/ProductListSkeleton';
 import Pagination from '../components/Pagination';
 import Header from '../components/Header';
 import LoginModal from "../components/LoginModal";
+import { useDebounce } from '../utils/useDebounce';
 
 //item show total
 const PAGE_SIZE = 24;
@@ -16,6 +17,7 @@ export default function ProductListPage() {
   const [page, setPage] = useState(1);
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const debouncedQuery = useDebounce(query, 1000);
 
   useEffect(() => {
     let mounted = true;
@@ -31,10 +33,11 @@ export default function ProductListPage() {
     };
     fetch();
     return () => (mounted = false);
+
   }, []);
 
   const filtered = products.filter((p) =>
-    p.product_name?.toLowerCase().includes(query.toLowerCase())
+    p.product_name?.toLowerCase().includes(debouncedQuery.toLowerCase())
   );
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));

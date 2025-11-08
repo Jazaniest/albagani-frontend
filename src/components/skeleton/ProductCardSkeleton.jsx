@@ -4,7 +4,7 @@ const ProductCardSkeleton = () => {
   return (
     <div className="relative mt-20 sm:mt-30">
       {/* Hot Product Label Skeleton */}
-      <div className="h-4 w-20 bg-gray-400 rounded"></div>
+      {/* <div className="h-4 w-20 bg-gray-400 rounded"></div> */}
 
       {/* Product Card Skeleton */}
       <div className="overflow-hidden shadow-xl bg-goldenbeige rounded-3xl animate-pulse mt-6">

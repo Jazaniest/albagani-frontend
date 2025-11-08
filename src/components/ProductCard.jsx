@@ -23,7 +23,7 @@ const ProductCard = ({ product }) => {
     return (
         <div className="relative">
             {/* Hot Product Label */}
-            <span className="text-xl font-semibold text-white">Hot Product</span>
+            {/* <span className="text-xl font-semibold text-white">Hot Product</span> */}
 
             {/* Product Card */}
             <div className="overflow-hidden transition-all shadow-xl bg-goldenbeige rounded-3xl group mt-6">

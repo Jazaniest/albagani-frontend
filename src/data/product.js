@@ -50,7 +50,7 @@ export async function getProducts() {
 // ==============================
 // Fungsi untuk menambah produk melalui backend
 // ==============================
-export async function addProduct({ product_name, product_price, product_photo, product_link }) {
+export async function addProduct({ product_name, product_price, product_photo, product_link, product_category }) {
   const token = localStorage.getItem('auth_token');
   let response;
   try {
@@ -59,7 +59,8 @@ export async function addProduct({ product_name, product_price, product_photo, p
       formData.append('product_name', product_name);
       formData.append('product_price', product_price);
       formData.append('product_link', product_link);
-      formData.append('product_photo', product_photo); // nama field sesuai BE
+      formData.append('product_photo', product_photo);
+      formData.append('product_category', product_category);
       response = await fetchWithCredentials(`${API_URL}/add-product/manual`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
@@ -69,7 +70,7 @@ export async function addProduct({ product_name, product_price, product_photo, p
       response = await fetchWithCredentials(`${API_URL}/add-product/tiktok`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ product_name, product_price, product_photo, product_link }),
+        body: JSON.stringify({ product_name, product_price, product_photo, product_link, product_category }),
       });
     }
 

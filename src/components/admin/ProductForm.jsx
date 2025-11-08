@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { fetchProductDataFromBackend, addProduct } from "../../data/product";
+import { fetchProductDataFromBackend, addProduct, category } from "../../data/product";
 
 const ProductForm = ({ onSubmit }) => {
   const [mode, setMode] = useState("manual");
@@ -9,6 +9,7 @@ const ProductForm = ({ onSubmit }) => {
     price: "",
     image: "",
     link: "",
+    category: "",
     file: null,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +43,8 @@ const ProductForm = ({ onSubmit }) => {
         setError("Gagal mengambil data produk dari backend.");
       }
     } catch (error) {
-      setError("Gagal mengambil data produk. Pastikan URL valid.", error);
+      setError("Gagal mengambil data produk. Pastikan URL valid.");
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -58,6 +60,7 @@ const ProductForm = ({ onSubmit }) => {
         product_price: form.price,
         product_link: form.link,
         product_photo: form.file,
+        product_category: form.category,
       };
     } else {
       // TikTok mode
@@ -66,6 +69,7 @@ const ProductForm = ({ onSubmit }) => {
         product_price: form.price,
         product_link: form.link,
         product_photo: form.image,
+        product_category: form.category,
       };
     }
 
@@ -86,7 +90,7 @@ const ProductForm = ({ onSubmit }) => {
       const result = await addProduct(payload);
       if (result) {
         // Reset form setelah berhasil
-        setForm({ name: "", title: "", price: "", image: "", link: "", file: null });
+        setForm({ name: "", title: "", price: "", image: "", link: "", category: "", file: null });
         setError("");
         // Panggil callback onSubmit dari parent jika tersedia
         if (typeof onSubmit === "function") {
@@ -181,6 +185,26 @@ const ProductForm = ({ onSubmit }) => {
 
           <div>
             <label className="block text-sm font-medium text-deepblue mb-1">
+              Kategori Produk
+            </label>
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              required
+              className="w-full rounded-xl border px-3 py-2 focus:ring-2 focus:ring-deepblue"
+            >
+              <option value="">Pilih kategori</option>
+              {category().map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-deepblue mb-1">
               Foto Produk
             </label>
             <input
@@ -249,6 +273,26 @@ const ProductForm = ({ onSubmit }) => {
               </p>
             </div>
           )}
+
+          <div>
+            <label className="block text-sm font-medium text-deepblue mb-1">
+              Kategori Produk
+            </label>
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              required
+              className="w-full rounded-xl border px-3 py-2 focus:ring-2 focus:ring-deepblue"
+            >
+              <option value="">Pilih kategori</option>
+              {category().map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-deepblue mb-1">

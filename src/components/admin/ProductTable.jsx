@@ -244,7 +244,7 @@ const ProductTable = ({ items, onRemove, onEdit }) => {
                   Kategori Produk
                 </label>
                 <select
-                  name="category"
+                  name="product_category"
                   value={editForm.category}
                   onChange={handleEditChange}
                   required

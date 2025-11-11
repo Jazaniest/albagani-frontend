@@ -11,16 +11,36 @@ const ProductForm = ({ onSubmit }) => {
     link: "",
     category: "",
     file: null,
+    number: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const normalizeWhatsapp = (raw) => {
+    if (!raw) return "";
+    let digits = String(raw).replace(/\D/g, "");
+    if (digits.startsWith("0")) digits = "62" + digits.slice(1);
+    else if (digits.startsWith("8")) digits = "62" + digits;
+    return digits;
+  };
+
+  const buildWhatsAppLink = (raw) => {
+    const normalized = normalizeWhatsapp(raw);
+    return normalized ? `https://wa.me/${normalized}` : "";
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "number") {
+      const waLink = buildWhatsAppLink(value);
+      setForm((prev) => ({ ...prev, number: value, link: waLink }));
+      return;
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handler untuk perubahan file pada mode manual
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0];
     setForm((prev) => ({ ...prev, file }));
@@ -90,7 +110,7 @@ const ProductForm = ({ onSubmit }) => {
       const result = await addProduct(payload);
       if (result) {
         // Reset form setelah berhasil
-        setForm({ name: "", title: "", price: "", image: "", link: "", category: "", file: null });
+        setForm({ name: "", title: "", price: "", image: "", link: "", category: "", file: null, number: "" });
         setError("");
         // Panggil callback onSubmit dari parent jika tersedia
         if (typeof onSubmit === "function") {
@@ -170,14 +190,14 @@ const ProductForm = ({ onSubmit }) => {
 
           <div>
             <label className="block text-sm font-medium text-deepblue mb-1">
-              Link Produk
+              No Whatsapp
             </label>
             <input
-              type="url"
-              name="link"
-              value={form.link}
+              type="number"
+              name="number"
+              value={form.number}
               onChange={handleChange}
-              placeholder="https://contoh.com/produk"
+              placeholder="08xxxxxxx"
               required
               className="w-full rounded-xl border px-3 py-2 focus:ring-2 focus:ring-deepblue"
             />
@@ -304,6 +324,7 @@ const ProductForm = ({ onSubmit }) => {
               value={form.price}
               onChange={handleChange}
               placeholder="0"
+              required
               className="w-full rounded-xl border px-3 py-2 focus:ring-2 focus:ring-deepblue"
             />
           </div>
